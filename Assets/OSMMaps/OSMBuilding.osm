@@ -1,0 +1,26 @@
+<osm version="0.6" generator="CGImap 0.9.2 (1788481 spike-08.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+<relation id="1343236" visible="true" version="15" changeset="141361719" timestamp="2023-09-16T23:21:35Z" user="traveleditor" uid="8726248">
+<member type="way" ref="87137051" role="outer"/>
+<member type="way" ref="91741459" role="outer"/>
+<member type="way" ref="1003958841" role="outer"/>
+<member type="way" ref="1003958840" role="outer"/>
+<member type="way" ref="1003958847" role="outer"/>
+<member type="way" ref="1003958846" role="outer"/>
+<member type="way" ref="73010075" role="outer"/>
+<member type="way" ref="91741460" role="outer"/>
+<tag k="addr:housenumber" v="9"/>
+<tag k="addr:street" v="улица Ломоносова"/>
+<tag k="amenity" v="university"/>
+<tag k="check_date" v="2022-05-05"/>
+<tag k="contact:vk" v="https://vk.com/itmoru"/>
+<tag k="contact:website" v="https://www.ifmo.ru"/>
+<tag k="internet_access" v="yes"/>
+<tag k="internet_access:fee" v="customers"/>
+<tag k="name" v="Университет ИТМО"/>
+<tag k="official_name" v="Федеральное государственное автономное образовательное учреждение высшего образования «Санкт-Петербургский национальный исследовательский университет информационных технологий, механики и оптики»"/>
+<tag k="old_name" v="Санкт-Петербургский государственный университет низкотемпературных и пищевых технологий"/>
+<tag k="opening_hours" v="07:00-24:00"/>
+<tag k="source" v="rgis"/>
+<tag k="type" v="multipolygon"/>
+</relation>
+</osm>

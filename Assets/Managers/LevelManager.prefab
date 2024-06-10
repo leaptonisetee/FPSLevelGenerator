@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1357799725213068480
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8022827834246557292}
+  - component: {fileID: 822793568247917547}
+  - component: {fileID: 4532645839744503504}
+  - component: {fileID: 8929737131661069804}
+  - component: {fileID: 6719723935687780876}
+  m_Layer: 0
+  m_Name: LevelManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8022827834246557292
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357799725213068480}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -12690.869, y: 71.913506, z: -23422.854}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &822793568247917547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357799725213068480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5748ff4fe06af89418d4138c11966c49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  geometryPrefab: {fileID: 1999373165643993137, guid: cd9139d7f8f95974cbcb19d2e325b237, type: 3}
+  levelRoot: {fileID: 0}
+  arenaGenerator: {fileID: 4532645839744503504}
+  sniperPositionGenerator: {fileID: 8929737131661069804}
+  narrowPositionGenerator: {fileID: 6719723935687780876}
+  arenas: 1
+  sniperPositions: 1
+  narrowPositions: 1
+--- !u!114 &4532645839744503504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357799725213068480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceafe4ed4fc5c824baaa78a967cbf657, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coverPrefab: {fileID: 8792686834023141690, guid: 7b26d246ced93914e80d1cdf3d152a53, type: 3}
+  enemyPrefab: {fileID: 5898565661527538772, guid: b51ceb6968b6e69489917122872b6bed, type: 3}
+  interactivePrefab: {fileID: 7872951934520008098, guid: 98bcb1db8b1447942a45279406e09565, type: 3}
+  minCoverCount: 10
+  maxCoverCount: 20
+  minEnemyCount: 3
+  maxEnemyCount: 7
+  minInteractiveCount: 2
+  maxInteractiveCount: 5
+  minOpenAreaSize: 40
+  arenaWidth: 40
+  arenaLength: 40
+--- !u!114 &8929737131661069804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357799725213068480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a3c77561eb432247ae1dda43b4cf81a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coverPrefab: {fileID: 8792686834023141690, guid: 7b26d246ced93914e80d1cdf3d152a53, type: 3}
+  edgeOffset: 1
+  minHeight: 30
+  minDistanceBetweenPositions: 10
+  maxPositionsPerRoof: 2
+  visibilityCheckRays: 100
+  maxRayDistance: 30
+  visibilityLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  areaWidth: 10
+  areaLength: 15
+  coversPerArea: 4
+--- !u!114 &6719723935687780876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1357799725213068480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77a4fb73ee378324d9f50c525612a5ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coverPrefab: {fileID: 8792686834023141690, guid: 7b26d246ced93914e80d1cdf3d152a53, type: 3}
+  enemyPrefab: {fileID: 5898565661527538772, guid: b51ceb6968b6e69489917122872b6bed, type: 3}
+  interactivePrefab: {fileID: 7872951934520008098, guid: 98bcb1db8b1447942a45279406e09565, type: 3}
+  minCoverCount: 3
+  maxCoverCount: 7
+  minEnemyCount: 2
+  maxEnemyCount: 5
+  minInteractiveCount: 1
+  maxInteractiveCount: 3
+  minOpenAreaSize: 15
+  narrowWidth: 10
+  narrowLength: 50
