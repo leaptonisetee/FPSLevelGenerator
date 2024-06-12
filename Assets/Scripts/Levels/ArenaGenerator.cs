@@ -17,7 +17,7 @@ public class ArenaGenerator : MonoBehaviour
     public float arenaLength = 30f; // Длина арены
 
     private List<GameObject> arenas = new List<GameObject>();
-    private List<Rect> arenaBounds = new List<Rect>(); // Список границ арен для проверки пересечений
+    public List<Rect> arenaBounds = new List<Rect>(); // Сделаем этот список публичным для доступа из других классов
 
     public void GenerateArenas(GameObject geometry)
     {

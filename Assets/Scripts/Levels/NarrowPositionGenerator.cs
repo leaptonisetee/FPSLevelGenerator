@@ -17,6 +17,7 @@ public class NarrowPositionGenerator : MonoBehaviour
     public float narrowLength = 50f; // Длина узкой позиции
 
     private List<GameObject> narrowPositions = new List<GameObject>();
+    public List<Rect> arenaBounds; // Добавляем список границ арен
 
     public void GenerateNarrowPositions(GameObject geometry)
     {
@@ -71,7 +72,7 @@ public class NarrowPositionGenerator : MonoBehaviour
                 Vector3 closestRoadDirection = roadDirections[FindClosestRoadIndex(area, roadPositions)];
                 GameObject narrowPosition = CreateNarrowPosition(area, closestRoadDirection, narrowContainer.transform);
 
-                if (!IsOverlappingWithExistingNarrowPositions(narrowPosition))
+                if (!IsOverlappingWithExistingNarrowPositions(narrowPosition) && !IsOverlappingWithArenaBounds(newNarrowBounds))
                 {
                     narrowPositions.Add(narrowPosition);
                 }
@@ -173,6 +174,18 @@ public class NarrowPositionGenerator : MonoBehaviour
         return false;
     }
 
+    bool IsOverlappingWithArenaBounds(Rect newNarrowBounds)
+    {
+        foreach (Rect bounds in arenaBounds)
+        {
+            if (bounds.Overlaps(newNarrowBounds))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     Rect RotateRect(Rect rect, float angle)
     {
         Vector2 center = rect.center;
@@ -208,15 +221,15 @@ public class NarrowPositionGenerator : MonoBehaviour
         int enemyCount = Random.Range(minEnemyCount, maxEnemyCount);
         int interactiveCount = Random.Range(minInteractiveCount, maxInteractiveCount);
 
-        PlaceCoversInPatterns(narrowPosition.transform, coverCount, direction);
-        PlaceEnemiesInPatterns(narrowPosition.transform, enemyCount, direction);
-        PlaceInteractiveElementsInPatterns(narrowPosition.transform, interactiveCount, direction);
+        PlaceCoversInPatterns(narrowPosition.transform, coverCount);
+        PlaceEnemiesInPatterns(narrowPosition.transform, enemyCount);
+        PlaceInteractiveElementsInPatterns(narrowPosition.transform, interactiveCount);
 
         Debug.Log($"Narrow position created at position: {position}");
         return narrowPosition;
     }
 
-    void PlaceCoversInPatterns(Transform narrowTransform, int coverCount, Vector3 direction)
+    void PlaceCoversInPatterns(Transform narrowTransform, int coverCount)
     {
         // Применение нескольких паттернов для размещения укрытий
         int patternsToApply = Random.Range(1, 4);
@@ -232,7 +245,7 @@ public class NarrowPositionGenerator : MonoBehaviour
             switch (pattern)
             {
                 case 0:
-                    PlaceCoversInLine(narrowTransform, countForPattern, direction);
+                    PlaceCoversInLine(narrowTransform, countForPattern);
                     break;
                 case 1:
                     PlaceCoversInGrid(narrowTransform, countForPattern);
@@ -244,7 +257,7 @@ public class NarrowPositionGenerator : MonoBehaviour
         }
     }
 
-    void PlaceEnemiesInPatterns(Transform narrowTransform, int enemyCount, Vector3 direction)
+    void PlaceEnemiesInPatterns(Transform narrowTransform, int enemyCount)
     {
         // Применение нескольких паттернов для размещения врагов
         int patternsToApply = Random.Range(1, 3);
@@ -260,7 +273,7 @@ public class NarrowPositionGenerator : MonoBehaviour
             switch (pattern)
             {
                 case 0:
-                    PlaceEnemiesInLine(narrowTransform, countForPattern, direction);
+                    PlaceEnemiesInLine(narrowTransform, countForPattern);
                     break;
                 case 1:
                     PlaceEnemiesInClusters(narrowTransform, countForPattern);
@@ -269,7 +282,7 @@ public class NarrowPositionGenerator : MonoBehaviour
         }
     }
 
-    void PlaceInteractiveElementsInPatterns(Transform narrowTransform, int interactiveCount, Vector3 direction)
+    void PlaceInteractiveElementsInPatterns(Transform narrowTransform, int interactiveCount)
     {
         // Применение нескольких паттернов для размещения интерактивных элементов
         int patternsToApply = Random.Range(1, 2);
@@ -285,7 +298,7 @@ public class NarrowPositionGenerator : MonoBehaviour
             switch (pattern)
             {
                 case 0:
-                    PlaceInteractiveElementsInLine(narrowTransform, countForPattern, direction);
+                    PlaceInteractiveElementsInLine(narrowTransform, countForPattern);
                     break;
                 case 1:
                     PlaceInteractiveElementsInClusters(narrowTransform, countForPattern);
@@ -294,14 +307,15 @@ public class NarrowPositionGenerator : MonoBehaviour
         }
     }
 
-    void PlaceCoversInLine(Transform narrowTransform, int coverCount, Vector3 direction)
+    void PlaceCoversInLine(Transform narrowTransform, int coverCount)
     {
         float spacing = narrowLength / (coverCount + 1);
         for (int i = 0; i < coverCount; i++)
         {
-            Vector3 coverPos = narrowTransform.position + new Vector3(Random.Range(-narrowWidth / 2, narrowWidth / 2), 0, -narrowLength / 2 + spacing * (i + 1));
-            Quaternion coverRotation = Quaternion.LookRotation(direction, Vector3.up);
-            Instantiate(coverPrefab, coverPos, coverRotation, narrowTransform);
+            Vector3 localPos = new Vector3(Random.Range(-narrowWidth / 2, narrowWidth / 2), 0, -narrowLength / 2 + spacing * (i + 1));
+            Vector3 worldPos = narrowTransform.TransformPoint(localPos);
+            Quaternion coverRotation = narrowTransform.rotation;
+            Instantiate(coverPrefab, worldPos, coverRotation, narrowTransform);
         }
     }
 
@@ -317,9 +331,10 @@ public class NarrowPositionGenerator : MonoBehaviour
             {
                 if (coverCount <= 0) return;
 
-                Vector3 coverPos = narrowTransform.position + new Vector3(-narrowWidth / 2 + spacingX * (x + 1), 0, -narrowLength / 2 + spacingZ * (z + 1));
-                Quaternion coverRotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
-                Instantiate(coverPrefab, coverPos, coverRotation, narrowTransform);
+                Vector3 localPos = new Vector3(-narrowWidth / 2 + spacingX * (x + 1), 0, -narrowLength / 2 + spacingZ * (z + 1));
+                Vector3 worldPos = narrowTransform.TransformPoint(localPos);
+                Quaternion coverRotation = narrowTransform.rotation;
+                Instantiate(coverPrefab, worldPos, coverRotation, narrowTransform);
                 coverCount--;
             }
         }
@@ -332,29 +347,31 @@ public class NarrowPositionGenerator : MonoBehaviour
 
         for (int i = 0; i < clusterCount; i++)
         {
-            Vector3 clusterCenter = narrowTransform.position + new Vector3(Random.Range(-narrowWidth / 2, narrowWidth / 2), 0, Random.Range(-narrowLength / 2, narrowLength / 2));
+            Vector3 clusterCenter = narrowTransform.position + narrowTransform.rotation * new Vector3(Random.Range(-narrowWidth / 2, narrowWidth / 2), 0, Random.Range(-narrowLength / 2, narrowLength / 2));
             int coversInThisCluster = Random.Range(2, 4);
 
             for (int j = 0; j < coversInThisCluster; j++)
             {
                 if (coverCount <= 0) return;
 
-                Vector3 coverPos = clusterCenter + new Vector3(Random.Range(-clusterRadius, clusterRadius), 0, Random.Range(-clusterRadius, clusterRadius));
-                Quaternion coverRotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
-                Instantiate(coverPrefab, coverPos, coverRotation, narrowTransform);
+                Vector3 localPos = new Vector3(Random.Range(-clusterRadius, clusterRadius), 0, Random.Range(-clusterRadius, clusterRadius));
+                Vector3 worldPos = narrowTransform.TransformPoint(clusterCenter + localPos);
+                Quaternion coverRotation = narrowTransform.rotation;
+                Instantiate(coverPrefab, worldPos, coverRotation, narrowTransform);
                 coverCount--;
             }
         }
     }
 
-    void PlaceEnemiesInLine(Transform narrowTransform, int enemyCount, Vector3 direction)
+    void PlaceEnemiesInLine(Transform narrowTransform, int enemyCount)
     {
         float spacing = narrowLength / (enemyCount + 1);
         for (int i = 0; i < enemyCount; i++)
         {
-            Vector3 enemyPos = narrowTransform.position + new Vector3(Random.Range(-narrowWidth / 2, narrowWidth / 2), 1f, -narrowLength / 2 + spacing * (i + 1));
-            Quaternion enemyRotation = Quaternion.LookRotation(direction, Vector3.up);
-            Instantiate(enemyPrefab, enemyPos, enemyRotation, narrowTransform);
+            Vector3 localPos = new Vector3(Random.Range(-narrowWidth / 2, narrowWidth / 2), 1f, -narrowLength / 2 + spacing * (i + 1));
+            Vector3 worldPos = narrowTransform.TransformPoint(localPos);
+            Quaternion enemyRotation = narrowTransform.rotation;
+            Instantiate(enemyPrefab, worldPos, enemyRotation, narrowTransform);
         }
     }
 
@@ -365,29 +382,31 @@ public class NarrowPositionGenerator : MonoBehaviour
 
         for (int i = 0; i < clusterCount; i++)
         {
-            Vector3 clusterCenter = narrowTransform.position + new Vector3(Random.Range(-narrowWidth / 2, narrowWidth / 2), 0, Random.Range(-narrowLength / 2, narrowLength / 2));
+            Vector3 clusterCenter = narrowTransform.position + narrowTransform.rotation * new Vector3(Random.Range(-narrowWidth / 2, narrowWidth / 2), 1f, Random.Range(-narrowLength / 2, narrowLength / 2));
             int enemiesInThisCluster = Random.Range(1, 3);
 
             for (int j = 0; j < enemiesInThisCluster; j++)
             {
                 if (enemyCount <= 0) return;
 
-                Vector3 enemyPos = clusterCenter + new Vector3(Random.Range(-clusterRadius, clusterRadius), 1f, Random.Range(-clusterRadius, clusterRadius));
-                Quaternion enemyRotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
-                Instantiate(enemyPrefab, enemyPos, enemyRotation, narrowTransform);
+                Vector3 localPos = new Vector3(Random.Range(-clusterRadius, clusterRadius), 1f, Random.Range(-clusterRadius, clusterRadius));
+                Vector3 worldPos = narrowTransform.TransformPoint(clusterCenter + localPos);
+                Quaternion enemyRotation = narrowTransform.rotation;
+                Instantiate(enemyPrefab, worldPos, enemyRotation, narrowTransform);
                 enemyCount--;
             }
         }
     }
 
-    void PlaceInteractiveElementsInLine(Transform narrowTransform, int interactiveCount, Vector3 direction)
+    void PlaceInteractiveElementsInLine(Transform narrowTransform, int interactiveCount)
     {
         float spacing = narrowLength / (interactiveCount + 1);
         for (int i = 0; i < interactiveCount; i++)
         {
-            Vector3 interactivePos = narrowTransform.position + new Vector3(Random.Range(-narrowWidth / 2, narrowWidth / 2), 0.5f, -narrowLength / 2 + spacing * (i + 1));
-            Quaternion interactiveRotation = Quaternion.LookRotation(direction, Vector3.up);
-            Instantiate(interactivePrefab, interactivePos, interactiveRotation, narrowTransform);
+            Vector3 localPos = new Vector3(Random.Range(-narrowWidth / 2, narrowWidth / 2), 0.5f, -narrowLength / 2 + spacing * (i + 1));
+            Vector3 worldPos = narrowTransform.TransformPoint(localPos);
+            Quaternion interactiveRotation = narrowTransform.rotation;
+            Instantiate(interactivePrefab, worldPos, interactiveRotation, narrowTransform);
         }
     }
 
@@ -398,16 +417,17 @@ public class NarrowPositionGenerator : MonoBehaviour
 
         for (int i = 0; i < clusterCount; i++)
         {
-            Vector3 clusterCenter = narrowTransform.position + new Vector3(Random.Range(-narrowWidth / 2, narrowWidth / 2), 0, Random.Range(-narrowLength / 2, narrowLength / 2));
+            Vector3 clusterCenter = narrowTransform.position + narrowTransform.rotation * new Vector3(Random.Range(-narrowWidth / 2, narrowWidth / 2), 0.5f, Random.Range(-narrowLength / 2, narrowLength / 2));
             int interactiveInThisCluster = Random.Range(1, 3);
 
             for (int j = 0; j < interactiveInThisCluster; j++)
             {
                 if (interactiveCount <= 0) return;
 
-                Vector3 interactivePos = clusterCenter + new Vector3(Random.Range(-clusterRadius, clusterRadius), 0.5f, Random.Range(-clusterRadius, clusterRadius));
-                Quaternion interactiveRotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
-                Instantiate(interactivePrefab, interactivePos, interactiveRotation, narrowTransform);
+                Vector3 localPos = new Vector3(Random.Range(-clusterRadius, clusterRadius), 0.5f, Random.Range(-clusterRadius, clusterRadius));
+                Vector3 worldPos = narrowTransform.TransformPoint(clusterCenter + localPos);
+                Quaternion interactiveRotation = narrowTransform.rotation;
+                Instantiate(interactivePrefab, worldPos, interactiveRotation, narrowTransform);
                 interactiveCount--;
             }
         }
