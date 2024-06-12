@@ -58,13 +58,10 @@
 ![image](https://github.com/leaptonisetee/FPSLevelGenerator/assets/46487460/63c41c4d-6837-4eb2-94af-cc10894c0c6b)
 
 6. Убедитесь, что различные паттерны применены в геометрии со своими требованиями и паттернами
+![image](https://github.com/leaptonisetee/FPSLevelGenerator/assets/46487460/9e8639e1-49ec-4586-b69d-b994afdda06c)
 
----
-
-## Используемые технологии
-
-- **Unity**: Игровой движок для разработки и тестирования.
-- **OpenStreetMap**: Источник картографических данных.
+7. Примените различые паттерны с разными параметрами на других картах.
+![image](https://github.com/leaptonisetee/FPSLevelGenerator/assets/46487460/fda2c339-ff99-4eff-ae2f-57ab2bf7be0b)
 
 ---
 
